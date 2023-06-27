@@ -1,4 +1,5 @@
 const express = require('express')
+const path = require('path')
 require('express-async-errors')
 const dotenv = require('dotenv')
 const helmet = require('helmet')
@@ -18,12 +19,9 @@ dotenv.config()
 const app = express()
 const port = process.env.PORT || 4240
 
-// Application routing
-// app.use(express.static('./public'))
-
 app.set('trust proxy', 1)
 
-// app.use(express.static(path.resolve(__dirname, '../client/dist')))
+app.use(express.static(path.resolve(__dirname, '../client/dist')))
 
 app.use(express.json())
 app.use(helmet())
@@ -33,9 +31,9 @@ app.use(xssClean())
 app.use('/api/v1/auth', userRouter)
 app.use('/api/v1/savings', authMiddleWare, jobsRouter)
 
-// app.get('*', (req, res) => {
-//   res.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'))
-// })
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'))
+})
 
 app.use(errorHandlerMiddleWare)
 app.use(notFound)

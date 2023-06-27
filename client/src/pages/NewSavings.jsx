@@ -1,13 +1,34 @@
+import axios from 'axios'
 import { useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+import useGlobalContext from '../context/globalContext'
 
 const NewSavings = () => {
+  const { token } = useGlobalContext()
   const savingsRef = useRef(null)
+  const navigate = useNavigate()
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
     const savings = savingsRef.current.value
-    if (!savings) return
-    console.log(savings)
+    if (!savings) {
+      toast.error('please enter savings name')
+      return
+    }
+    try {
+      await axios.post(
+        { name: savings },
+        {
+          headers: { Authorization: `Bearer ${token.token}` },
+        }
+      )
+
+      toast.success('Savings Created')
+      navigate('/')
+      savingsRef.current.value
+    } catch (error) {
+      toast.error(error.response.data.msg)
+    }
   }
 
   return (
