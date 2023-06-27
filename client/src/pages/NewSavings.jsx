@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import useGlobalContext from '../context/globalContext'
 
 const NewSavings = () => {
@@ -17,15 +18,16 @@ const NewSavings = () => {
     }
     try {
       await axios.post(
+        '/api/v1/savings',
         { name: savings },
         {
           headers: { Authorization: `Bearer ${token.token}` },
         }
       )
 
-      toast.success('Savings Created')
-      navigate('/')
-      savingsRef.current.value
+      await toast.success('Savings Created')
+      await navigate('/')
+      savingsRef.current.value = ''
     } catch (error) {
       toast.error(error.response.data.msg)
     }

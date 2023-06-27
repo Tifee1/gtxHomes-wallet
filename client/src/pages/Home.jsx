@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import useGlobalContext from '../context/globalContext'
 import { toast } from 'react-toastify'
+import dayjs from 'dayjs'
 
 const Home = () => {
   const { setToken, token } = useGlobalContext()
@@ -18,7 +19,7 @@ const Home = () => {
         headers: { Authorization: `Bearer ${token.token}` },
       })
       const data = await resp.data
-      setSavings(data)
+      setSavings(data.savings)
       setLoading(false)
     } catch (error) {
       setError(true)
@@ -49,9 +50,9 @@ const Home = () => {
   if (savings.length === 0) {
     return (
       <section className='w-[90%] max-w-4xl mx-auto'>
-        <h2 className='text-center pt-6'>
+        <h3 className='text-center pt-6'>
           Welcome {token.name}, <button onClick={logOut}>Logout</button>
-        </h2>
+        </h3>
         <h2 className='text-center pt-6'>your have no savings</h2>
         <div className='flex items-center justify-center mt-6'>
           <Link
@@ -67,9 +68,9 @@ const Home = () => {
 
   return (
     <section className='w-[90%] max-w-4xl mx-auto grid gap-4 pt-12'>
-      <h2 className='text-center pt-6'>
+      <h3 className='text-center pt-6'>
         Welcome {token.name}, <button onClick={logOut}>Logout</button>
-      </h2>
+      </h3>
       <h2 className='text-center'>Your savings</h2>
       <div className='flex items-center justify-center mt-6'>
         <Link
@@ -79,14 +80,15 @@ const Home = () => {
           create new savings
         </Link>
       </div>
-      <article className='grid gap-2 w-full max-w-xl mx-auto'>
+      <article className='grid gap-2 w-full max-w-2xl mx-auto'>
         {savings.map((item, index) => {
           return (
             <div
-              className='bg-gray-500 block text-white py-1.5 px-2.5 capitalize rounded-md'
+              className='trans bg-gray-500 hover:bg-gray-700/60 text-white py-1.5 px-2.5 capitalize rounded-md flex justify-between'
               key={index}
             >
-              {item}
+              <span> {item.name}</span>{' '}
+              <span>{dayjs(item.createdAt).format('MMM D, YYYY')}</span>
             </div>
           )
         })}
